@@ -18,7 +18,7 @@ const DUMMY_PLACES = [
 
     {
         id:'p2',
-        title: 'Empire State Building',
+        title: 'Empire afsafae State Building',
         description : 'One Of the Most Famous Sky Scrapers in the world',
         imageUrl :'https://untappedcities.com/wp-content/uploads/2015/07/Flatiron-Building-Secrets-Roof-Basement-Elevator-Sonny-Atis-GFP-NYC_5.jpg',
         address : '20 W 34th St, New York, NY 10001, United States',
