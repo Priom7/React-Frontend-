@@ -1,12 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import Card from '../../shared/components/UIElements/Card'
 import Button from '../../shared/components/FormElements/Button'
 import Input from '../../shared/components/FormElements/Input'
 import { VALIDATOR_EMAIL, VALIDATOR_MINLENGTH, VALIDATOR_REQUIRE } from '../../shared/components/util/validators'
+import { AuthContext } from '../../shared/context/auth-context'
 import './Auth.css'
 import { useForm } from '../../shared/hooks/form-hook'
 
 const Auth = () => {
+
+  const auth = useContext (AuthContext)
 
     const [isLoginMode, setIsLoginMode] = useState(true)
 
@@ -56,6 +59,7 @@ const switchModeHandler = () => {
  const atuhSubmitHandler = event => {
      event.preventDefault();
      console.log(formState.inputs); // send data to backend
+     auth.login()
  }
 
     return <Card className = "authentication">
