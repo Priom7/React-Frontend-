@@ -1,96 +1,109 @@
-import React, { useState, useContext } from 'react'
-import Button from '../../shared/components/FormElements/Button'
-import Card from '../../shared/components/UIElements/Card'
-import Map from "../../shared/components/UIElements/Map"
-import Modal from '../../shared/components/UIElements/Modal'
-import { AuthContext } from '../../shared/context/auth-context'
-import './PlaceItem.css'
+import React, { useState, useContext } from "react";
+import Button from "../../shared/components/FormElements/Button";
+import Card from "../../shared/components/UIElements/Card";
+import { AuthContext } from "../../shared/context/auth-context";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import Map from "../../shared/components/UIElements/Map";
+import Modal from "../../shared/components/UIElements/Modal";
 
+import "./PlaceItem.css";
 
+const PlaceItem = (props) => {
+  const auth = useContext(AuthContext);
+  const { isLoading, isError, sendRequest, clearError } = useHttpClient();
 
-const PlaceItem = props => {
+  const [showMap, setShowMap] = useState(false);
+  const [showConfirmModal, setShowConfirmModal] = useState(false);
 
-    const auth = useContext(AuthContext)
+  const openMapHandler = () => setShowMap(true);
+  const closeMapHandler = () => setShowMap(false);
 
-    const [showMap, setShowMap] = useState(false)
-    const [showConfirmModal, setShowConfirmModal] = useState(false)
+  const showDeleteWarningHandler = () => setShowConfirmModal(true);
+  const cancelDeleteHandler = () => setShowConfirmModal(false);
 
-    const openMapHandeler = () => setShowMap(true)
-    const closeMapHandeler = () => setShowMap(false)
+  const confirmDeleteHandler = async () => {
+    setShowConfirmModal(false);
 
-    const showDeleteWarningHandler = () => setShowConfirmModal(true)
-    const cancelDeleteHandler = () => setShowConfirmModal (false)
-    const confirmDeleteHandler = () => {
-        setShowConfirmModal (false)
-        console.log("Deleting")
-    }
+    // send delete request to backend
 
-    return(
+    try {
+      await sendRequest(
+        `http://localhost:5000/api/places/${props.id}`,
+        "DELETE"
+      );
+      props.onDelete(props.id);
+    } catch (err) {}
+  };
+
+  return (
     <React.Fragment>
-
-
-        <Modal 
-            show={showMap} 
-            onCancel={closeMapHandeler} 
-            header={props.address} 
-            contentClass="place-item__model-content"
-            footerClass="place-item__modal-actions"
-            footer={
-                <Button onClick={closeMapHandeler}>CLOSE</Button>}>
-                <div className="map-container">
-                    <Map center={props.coordinates} zoom={16}></Map>
-                </div>
-        </Modal>
-
-
-        <Modal
-            show = {showConfirmModal}
-            onCancel = {cancelDeleteHandler}
-            header = "Are you sure?"
-            footerClass = "place-item__modal-actions"
-            footer = {
-                <React.Fragment>
-                    <Button inverse onClick = {cancelDeleteHandler}>CANCEL</Button>
-                    <Button danger onClick = {confirmDeleteHandler} >DELETE</Button>
-                </React.Fragment>
-            }>
-            <p>Are you sure you want to proceed and delete this place? Please note that this can't be undone thereafter.</p>
-        </Modal>
-
-
-
-
-     <li className='place-item'>
-         
-        <Card className="place-item__content">
-        <div className="place-item__image">
-            <img src={props.image} alt={props.title}/>
+      <ErrorModal error={isError} onClear={clearError} />
+      <Modal
+        show={showMap}
+        onCancel={closeMapHandler}
+        header={props.address}
+        contentClass="place-item__model-content"
+        footerClass="place-item__modal-actions"
+        footer={<Button onClick={closeMapHandler}>CLOSE</Button>}
+      >
+        <div className="map-container">
+          <Map center={props.coordinates} zoom={16}></Map>
         </div>
-        <div className="place-item__info">
+      </Modal>
+
+      <Modal
+        show={showConfirmModal}
+        onCancel={cancelDeleteHandler}
+        header="Are you sure?"
+        footerClass="place-item__modal-actions"
+        footer={
+          <React.Fragment>
+            <Button inverse onClick={cancelDeleteHandler}>
+              CANCEL
+            </Button>
+            <Button danger onClick={confirmDeleteHandler}>
+              DELETE
+            </Button>
+          </React.Fragment>
+        }
+      >
+        <p>
+          Are you sure you want to proceed and delete this place? Please note
+          that this can't be undone thereafter.
+        </p>
+      </Modal>
+
+      <li className="place-item">
+        <Card className="place-item__content">
+          {isLoading && <LoadingSpinner asOverLay />}
+          <div className="place-item__image">
+            <img src={props.image} alt={props.title} />
+          </div>
+          <div className="place-item__info">
             <h2>{props.title}</h2>
             <h2>{props.address}</h2>
             <p>{props.description}</p>
-        </div>
-        <div className="place-item__actions">
-            <Button inverse onClick={openMapHandeler}>VIEW ON MAP</Button>
+          </div>
+          <div className="place-item__actions">
+            <Button inverse onClick={openMapHandler}>
+              VIEW ON MAP
+            </Button>
 
-            {auth.isLoggedIn && (
-                <React.Fragment>
-
-                <Button to = {`/places/${props.id}`}>EDIT</Button>
-                <Button danger onClick = {showDeleteWarningHandler}>DELETE</Button>
-                </React.Fragment>
-
+            {auth.userId === props.creatorId && (
+              <Button to={`/places/${props.id}`}>EDIT</Button>
             )}
-            
-        </div>
+            {auth.userId === props.creatorId && (
+              <Button danger onClick={showDeleteWarningHandler}>
+                DELETE
+              </Button>
+            )}
+          </div>
         </Card>
-
-    </li>
-
-
+      </li>
     </React.Fragment>
-    )
-}
+  );
+};
 
-export default PlaceItem
+export default PlaceItem;

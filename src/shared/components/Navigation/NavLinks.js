@@ -14,7 +14,7 @@ const NavLinks = (props) => {
       </li>
       {auth.isLoggedIn && (
         <li>
-          <NavLink to="/u1/places" exact>
+          <NavLink to={`/${auth.userId}/places`} exact>
             MY PLACES
           </NavLink>
         </li>
@@ -34,11 +34,9 @@ const NavLinks = (props) => {
         </li>
       )}
       {auth.isLoggedIn && (
-          <li>
-
+        <li>
           <button onClick={auth.logout}>LOGOUT</button>
-
-          </li>
+        </li>
       )}
     </ul>
   );

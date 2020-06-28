@@ -1,38 +1,34 @@
-import React from 'react'
-import Card from "../../shared/components/UIElements/Card"
-import UserItem from './UserItem'
-import './UsersList.css'
+import React from "react";
+import Card from "../../shared/components/UIElements/Card";
+import UserItem from "./UserItem";
+import "./UsersList.css";
 
-const UsersList = props => {
-    if(props.items.length === 0 ){
-
-        return (
-            <div className="center">
-                <Card>
-                <h2>No User Found.</h2>
-                </Card>
-                
-            </div>
-        )
-    }
-
+const UsersList = (props) => {
+  if (props.items.length === 0) {
     return (
-        <ul className ="users-list">
-            {props.items.map(user =>{
-                return (
-                    <UserItem
-                        key={user.id}
-                        id={user.id}
-                        image ={ user.image}
-                        name = {user.name}
-                        placeCount = {user.places}>
+      <div className="center">
+        <Card>
+          <h2>No User Found.</h2>
+        </Card>
+      </div>
+    );
+  }
 
-                    </UserItem>
-                )
-            })}
-        </ul>
-    )
-    
-}
+  return (
+    <ul className="users-list">
+      {props.items.map((user) => {
+        return (
+          <UserItem
+            key={user.id}
+            id={user.id}
+            image={user.image}
+            name={user.name}
+            placeCount={user.places.length}
+          ></UserItem>
+        );
+      })}
+    </ul>
+  );
+};
 
-export default UsersList
+export default UsersList;

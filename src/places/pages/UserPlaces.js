@@ -1,42 +1,46 @@
-import React from 'react'
-import PlaceList from '../components/PlaceList'
-import { useParams } from 'react-router-dom'
+import React, { useEffect, useState } from "react";
+import PlaceList from "../components/PlaceList";
+import { useHttpClient } from "../../shared/hooks/http-hook";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import { useParams } from "react-router-dom";
 
+const UserPlaces = (props) => {
+  const [loadedPlaces, setLoadedPlaces] = useState();
+  const { isLoading, isError, sendRequest, clearError } = useHttpClient();
+  const userId = useParams().userId;
 
-const DUMMY_PLACES = [
-    {
-        id:'p1',
-        title: 'Empire State Building',
-        description : 'One Of the Most Famous Sky Scrapers in the world',
-        imageUrl :'https://i.ytimg.com/vi/nVzKzoFJkQo/maxresdefault.jpg',
-        address : '20 W 34th St, New York, NY 10001, United States',
-        location : {
-            lat: -34.397, lng: 150.644
-        },
-        creator : 'u1'
-    },
+  useEffect(() => {
+    const fetchPlaces = async () => {
+      try {
+        const responseData = await sendRequest(
+          `http://localhost:5000/api/places/user/${userId}`
+        );
+        setLoadedPlaces(responseData.places);
+      } catch (err) {}
+    };
+    fetchPlaces();
+  }, [sendRequest, userId]);
 
-    {
-        id:'p2',
-        title: 'Empire afsafae State Building',
-        description : 'One Of the Most Famous Sky Scrapers in the world',
-        imageUrl :'https://untappedcities.com/wp-content/uploads/2015/07/Flatiron-Building-Secrets-Roof-Basement-Elevator-Sonny-Atis-GFP-NYC_5.jpg',
-        address : '20 W 34th St, New York, NY 10001, United States',
-        location : {
-            lat: 23.815103, lng: 90.425538
-        },
-        creator: 'u2'
-    }
-]
+  const placeDeletedHandler = (deletedPlaceId) => {
+    setLoadedPlaces((prevPlaces) =>
+      prevPlaces.filter((place) => place.id !== deletedPlaceId)
+    );
+  };
 
+  return (
+    <React.Fragment>
+      <ErrorModal error={isError} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && loadedPlaces && (
+        <PlaceList items={loadedPlaces} onDeletePlace={placeDeletedHandler} />
+      )}
+    </React.Fragment>
+  );
+};
 
-const UserPlaces = props => {
-
-    const userId = useParams().userId
-
-    const loadedPlaces = DUMMY_PLACES.filter(place => place.creator === userId)
-
-    return <PlaceList items={loadedPlaces}></PlaceList>
-}
-
-export default UserPlaces
+export default UserPlaces;

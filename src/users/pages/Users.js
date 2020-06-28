@@ -1,21 +1,38 @@
-import React from 'react'
-import UsersList from '../components/UsersList'
+import React, { useEffect, useState } from "react";
+import UsersList from "../components/UsersList";
+import ErrorModal from "../../shared/components/UIElements/ErrorModal";
+import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
+import { useHttpClient } from "../../shared/hooks/http-hook";
 
 const Users = () => {
+  const [isLoadedUsers, setIsLoadedUsers] = useState();
+  const { isLoading, isError, sendRequest, clearError } = useHttpClient();
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const responseData = await sendRequest(
+          "http://localhost:5000/api/users"
+        );
 
-    const USERS = [
-        {
-            id : 'u1',
-            name : 'Md. Sharif Alam',
-            image : "https://png.pngtree.com/png-clipart/20190924/original/pngtree-user-vector-avatar-png-image_4830521.jpg",
-            places: 3
-        }
-    ]
+        setIsLoadedUsers(responseData.users);
+      } catch (err) {}
+    };
+    fetchUsers();
+  }, [sendRequest]);
 
-    return (
-        <UsersList items = {USERS}></UsersList>
-    )
-}
+  return (
+    <React.Fragment>
+      <ErrorModal error={isError} onClear={clearError} />
+      {isLoading && (
+        <div className="center">
+          <LoadingSpinner />
+        </div>
+      )}
+      {!isLoading && isLoadedUsers && (
+        <UsersList items={isLoadedUsers}></UsersList>
+      )}
+    </React.Fragment>
+  );
+};
 
-export default Users
-
+export default Users;
