@@ -13,7 +13,7 @@ import { useForm } from "../../shared/hooks/form-hook";
 import { useHttpClient } from "../../shared/hooks/http-hook";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
-
+import ImageUpload from "../../shared/components/FormElements/ImageUpload";
 const Auth = () => {
   const auth = useContext(AuthContext);
 
@@ -41,6 +41,7 @@ const Auth = () => {
         {
           ...formState.inputs,
           name: undefined,
+          image: undefined,
         },
         formState.inputs.email.isValid && formState.inputs.password.isValid
       );
@@ -52,6 +53,10 @@ const Auth = () => {
             value: "",
             isValid: false,
           },
+          image: {
+            value: null,
+            isValid: false,
+          },
         },
         false
       );
@@ -61,6 +66,7 @@ const Auth = () => {
 
   const atuhSubmitHandler = async (event) => {
     event.preventDefault();
+    console.log(formState.inputs);
 
     if (isLoginMode) {
       // send Login Data to backend
@@ -118,6 +124,10 @@ const Auth = () => {
               errorText="Please Enter a valid Name."
               onInput={inputHandler}
             ></Input>
+          )}
+
+          {!isLoginMode && (
+            <ImageUpload center id="image" onInput={inputHandler}></ImageUpload>
           )}
 
           <Input
