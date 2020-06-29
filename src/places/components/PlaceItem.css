@@ -53,6 +53,12 @@
   width: 100%;
 }
 
+.place-item_icons {
+  position: relative;
+  top: 5px;
+  padding: 1px;
+}
+
 @media (min-width: 768px) {
   .place-item__image {
     height: 20rem;

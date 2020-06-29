@@ -7,7 +7,12 @@ import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import Map from "../../shared/components/UIElements/Map";
 import Modal from "../../shared/components/UIElements/Modal";
-
+import EditIcon from "@material-ui/icons/Edit";
+import DeleteIcon from "@material-ui/icons/Delete";
+import ExploreIcon from "@material-ui/icons/Explore";
+import TocIcon from "@material-ui/icons/Toc";
+import LocationOnIcon from "@material-ui/icons/LocationOn";
+import DescriptionIcon from "@material-ui/icons/Description";
 import "./PlaceItem.css";
 
 const PlaceItem = (props) => {
@@ -79,23 +84,39 @@ const PlaceItem = (props) => {
         <Card className="place-item__content">
           {isLoading && <LoadingSpinner asOverLay />}
           <div className="place-item__image">
-            <img src={props.image} alt={props.title} />
+            <img
+              src={`http://localhost:5000/${props.image}`}
+              alt={props.title}
+            />
           </div>
           <div className="place-item__info">
-            <h2>{props.title}</h2>
-            <h2>{props.address}</h2>
-            <p>{props.description}</p>
+            <h2>
+              <TocIcon className="place-item_icons"></TocIcon> {props.title}
+            </h2>
+
+            <h4>
+              <LocationOnIcon className="place-item_icons"></LocationOnIcon>{" "}
+              {props.address}
+            </h4>
+            <p>
+              <DescriptionIcon className="place-item_icons"></DescriptionIcon>
+              {props.description}
+            </p>
           </div>
           <div className="place-item__actions">
             <Button inverse onClick={openMapHandler}>
+              <ExploreIcon className="place-item_icons"></ExploreIcon>
               VIEW ON MAP
             </Button>
 
             {auth.userId === props.creatorId && (
-              <Button to={`/places/${props.id}`}>EDIT</Button>
+              <Button to={`/places/${props.id}`}>
+                <EditIcon className="place-item_icons"></EditIcon> EDIT
+              </Button>
             )}
             {auth.userId === props.creatorId && (
               <Button danger onClick={showDeleteWarningHandler}>
+                <DeleteIcon className="place-item_icons"></DeleteIcon>
                 DELETE
               </Button>
             )}

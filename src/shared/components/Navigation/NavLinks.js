@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import { NavLink } from "react-router-dom";
 import { AuthContext } from "../../context/auth-context";
+import GroupIcon from "@material-ui/icons/Group";
+import LockOpenIcon from "@material-ui/icons/LockOpen";
 import "./NavLinks.css";
 
 const NavLinks = (props) => {
@@ -9,6 +11,7 @@ const NavLinks = (props) => {
     <ul className="nav-links">
       <li>
         <NavLink to="/" exact>
+          <GroupIcon className="nav-icons"></GroupIcon>
           ALL USERS
         </NavLink>
       </li>
@@ -29,6 +32,7 @@ const NavLinks = (props) => {
       {!auth.isLoggedIn && (
         <li>
           <NavLink to="/auth" exact>
+            <LockOpenIcon className="nav-icons"></LockOpenIcon>
             AUTHENTICATE
           </NavLink>
         </li>

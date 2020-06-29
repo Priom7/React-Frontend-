@@ -14,6 +14,11 @@ import { useHttpClient } from "../../shared/hooks/http-hook";
 import ErrorModal from "../../shared/components/UIElements/ErrorModal";
 import LoadingSpinner from "../../shared/components/UIElements/LoadingSpinner";
 import ImageUpload from "../../shared/components/FormElements/ImageUpload";
+import LockIcon from "@material-ui/icons/Lock";
+import EmailIcon from "@material-ui/icons/Email";
+import VpnKeyIcon from "@material-ui/icons/VpnKey";
+import AddCircleIcon from "@material-ui/icons/AddCircle";
+import LibraryBooksIcon from "@material-ui/icons/LibraryBooks";
 const Auth = () => {
   const auth = useContext(AuthContext);
 
@@ -66,7 +71,6 @@ const Auth = () => {
 
   const atuhSubmitHandler = async (event) => {
     event.preventDefault();
-    console.log(formState.inputs);
 
     if (isLoginMode) {
       // send Login Data to backend
@@ -87,18 +91,15 @@ const Auth = () => {
     } else {
       try {
         // send Signup to backend
-
+        const formData = new FormData();
+        formData.append("email", formState.inputs.email.value);
+        formData.append("name", formState.inputs.name.value);
+        formData.append("password", formState.inputs.password.value);
+        formData.append("image", formState.inputs.image.value);
         const responseData = await sendRequest(
           "http://localhost:5000/api/users/signup",
           "POST",
-          JSON.stringify({
-            name: formState.inputs.name.value,
-            email: formState.inputs.email.value,
-            password: formState.inputs.password.value,
-          }),
-          {
-            "Content-Type": "application/json",
-          }
+          formData
         );
 
         auth.login(responseData.user.id);
@@ -111,6 +112,7 @@ const Auth = () => {
       <ErrorModal error={isError} onClear={clearError} />
       <Card className="authentication">
         {isLoading && <LoadingSpinner asOverlay />}
+        <VpnKeyIcon></VpnKeyIcon>
         <h2>Login Required</h2>
         <hr></hr>
         <form onSubmit={atuhSubmitHandler}>
@@ -127,8 +129,14 @@ const Auth = () => {
           )}
 
           {!isLoginMode && (
-            <ImageUpload center id="image" onInput={inputHandler}></ImageUpload>
+            <ImageUpload
+              center
+              id="image"
+              onInput={inputHandler}
+              errorText="Please provide and image..."
+            ></ImageUpload>
           )}
+          <EmailIcon></EmailIcon>
 
           <Input
             id="email"
@@ -139,7 +147,7 @@ const Auth = () => {
             errorText="Please Enter a valid Email address."
             onInput={inputHandler}
           ></Input>
-
+          <LockIcon></LockIcon>
           <Input
             id="password"
             element="input"
@@ -151,11 +159,13 @@ const Auth = () => {
           ></Input>
 
           <Button type="submit" disabled={!formState.isValid}>
+            <AddCircleIcon className="auth-icons"></AddCircleIcon>
             {isLoginMode ? "LOGIN" : "SIGNUP"}
           </Button>
         </form>
 
         <Button inverse onClick={switchModeHandler}>
+          <LibraryBooksIcon className="auth-icons"></LibraryBooksIcon>
           Switch to {isLoginMode ? "SIGNUP" : "LOGIN"}
         </Button>
       </Card>
