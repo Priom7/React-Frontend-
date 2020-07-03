@@ -6,6 +6,7 @@ import PlaceIcon from "@material-ui/icons/Place";
 import "./UserItem.css";
 
 const UserItem = (props) => {
+  let placesCount = !!props.placeCount;
   return (
     <li className="user-item">
       <Card className="user-item__content">
@@ -17,7 +18,14 @@ const UserItem = (props) => {
             ></Avatar>
           </div>
           <div className="user-item__info">
-            <h2>{props.name}</h2>
+            <h2>
+              {props.name}{" "}
+              <sup
+                className={` ${
+                  placesCount ? "user-item_active" : "user-item_disabled"
+                }`}
+              ></sup>{" "}
+            </h2>
             <h3>
               <PlaceIcon className="user-item_icons"></PlaceIcon>
               {props.placeCount} {props.placeCount === 1 ? "Place" : "Places"}

@@ -53,3 +53,19 @@
   top: 5px;
   padding: 2px;
 }
+
+.user-item_active {
+  height: 10px;
+  width: 10px;
+  background-color: rgb(21, 255, 91);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.user-item_disabled {
+  height: 10px;
+  width: 10px;
+  background-color: rgb(250, 4, 4);
+  border-radius: 50%;
+  display: inline-block;
+}
